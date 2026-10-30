@@ -22,3 +22,21 @@ endif()
 add_executable(cow-bench cow_bench.cpp)
 target_link_libraries(cow-bench PRIVATE benchmark::benchmark_main)
  
+find_package(GTest QUIET)
+if(NOT GTest_FOUND)
+    include(FetchContent)
+    set(BUILD_GMOCK OFF CACHE BOOL "" FORCE)
+    FetchContent_Declare(googletest
+        GIT_REPOSITORY https://github.com/google/googletest.git
+        GIT_TAG v1.18.0)
+    FetchContent_MakeAvailable(googletest)
+endif()
+
+enable_testing()
+
+add_executable(${PROJECT_NAME} tst_cow_string.cpp)
+target_link_libraries(${PROJECT_NAME} PRIVATE GTest::gtest_main)
+
+include(GoogleTest)
+gtest_discover_tests(${PROJECT_NAME})
+ 
